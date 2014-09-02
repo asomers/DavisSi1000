@@ -59,3 +59,16 @@ Once it finds your ISS it will display messages like this once every
 { "transmitter_id": 2, "RSSI": 128, "recv_packets": 22, "wind_speed_mph": 0, "wind_direction_degrees": 215, "temperature_F": 67.95, "humidity_pct": 63.6, "light": 1536, "rain_spoons": 12, "raw": "82 00 98 2A 29 00 E1 45 FF FF ", "version": "1.0" }
 
 These are in JSON format. 
+
+
+BMP085
+------
+To make use of a connected Adafruit BMP085 sensor (for barometric pressure):
+
+1. Install the Adafruit_BMP085 Python library to:
+
+/usr/local/src/Adafruit-Raspberry-Pi-Python-Code/Adafruit_BMP085/
+
+2. Edit /etc/default/weewx and add:
+
+export PYTHONPATH=/usr/local/src/Adafruit-Raspberry-Pi-Python-Code/Adafruit_BMP085/

@@ -36,6 +36,8 @@ import weeutil.weeutil
 import weewx.abstractstation
 import weewx.wxformulas
 
+from Adafruit_BMP085 import BMP085
+
 def loader(config_dict, engine):
     station = Si1000(**config_dict['Si1000'])
     return station
@@ -67,6 +69,8 @@ class Si1000(weewx.abstractstation.AbstractStation):
             'humidity_pct'           : ('outHumidity',  None),
             'rain_spoons'            : ('rain',      self.convert_rain)
             }
+
+        self.bmp = BMP085(0x77, 3)
 
     def convert_rain(self, rain_spoons):
         '''convert rain_spoons to rain in inches'''
@@ -111,6 +115,19 @@ class Si1000(weewx.abstractstation.AbstractStation):
                     if conversion is not None:
                         value = conversion(value)
                     _packet[name] = value
+
+            if not 'dewpoint' in _packet:
+                if 'outTemp' in _packet and 'outHumidity' in _packet:
+                    _packet['dewpoint'] = _packet['outTemp'] - (100 - _packet['outHumidity']) / 5
+
+            if not 'inTemp' in _packet:
+                _packet['inTemp'] = self.bmp.readTemperature() * 9.0 / 5.0 + 32
+
+            if not 'barometer' in _packet:
+                # Read pressure, convert to hPa and correct to sea level
+                pressure = self.bmp.readPressure() / 100.0 + 300 / 9.2
+		# Convert to inHg
+                _packet['barometer'] = pressure * 0.0295333727
             
             yield _packet
 
