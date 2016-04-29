@@ -33,14 +33,14 @@ import json
 
 import weedb
 import weeutil.weeutil
-import weewx.abstractstation
+import weewx.drivers
 import weewx.wxformulas
 
 def loader(config_dict, engine):
     station = Si1000(**config_dict['Si1000'])
     return station
         
-class Si1000(weewx.abstractstation.AbstractStation):
+class Si1000(weewx.drivers.AbstractDevice):
     """Si1000 driver"""
     
     def __init__(self, **stn_dict):
